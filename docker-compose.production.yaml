@@ -33,6 +33,4 @@ services:
       POSTGRES_USER: ${PSQL_USER} 
       POSTGRES_PASSWORD: ${PSQL_PASSWORD} 
       POSTGRES_DB: ${PSQL_DATABASE} 
-    volumes:
-      - ~/data/myblogportal/psql:/var/lib/postgresql/data/pgdata
     logging: *highlight-logging
