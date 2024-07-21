@@ -10,7 +10,6 @@ import (
 	"github.com/gorilla/csrf"
 	"github.com/joho/godotenv"
 	"github.com/raminderis/lenslocked/controller"
-	"github.com/raminderis/lenslocked/migrations"
 	"github.com/raminderis/lenslocked/models"
 	"github.com/raminderis/lenslocked/templates"
 	"github.com/raminderis/lenslocked/views"
@@ -66,13 +65,10 @@ func loadEnvConfig() (config, error) {
 }
 
 func main() {
-	fmt.Println("RAMINDER SINGH XXXXXXXX")
 	cfg, err := loadEnvConfig()
-	fmt.Println("XXXXXXXXXXXXXXXXXX PSQL DB CONFIG2 XXXXXXXXXXXXXX", cfg.PSQL.String())
 	if err != nil {
 		panic(err)
 	}
-	fmt.Println("XXXXXXXXXXXXXXXXXX PSQL DB CONFIG3 XXXXXXXXXXXXXX", cfg.PSQL.String())
 	err = run(cfg)
 	if err != nil {
 		panic(err)
@@ -82,7 +78,6 @@ func main() {
 func run(cfg config) error {
 	//Setup the DB
 	//fmt.Println(cfg.PSQL)
-	fmt.Println("XXXXXXXXXXXXXXXXXX PSQL DB CONFIG1 XXXXXXXXXXXXXX", cfg.PSQL.String())
 	db, err := models.Open(cfg.PSQL)
 	// cfg := models.DefaultCloudSqlConfig()
 	// db, err := models.ConnectWithConnector(cfg)
@@ -90,11 +85,10 @@ func run(cfg config) error {
 		return err
 	}
 	defer db.Close()
-	fmt.Println("XXXXXXXXXXXXXXXXXX PSQL DB CONFIG XXXXXXXXXXXXXX", cfg.PSQL.String())
-	err = models.MigrateFS(db, migrations.FS, "")
-	if err != nil {
-		return err
-	}
+	// err = models.MigrateFS(db, migrations.FS, "")
+	// if err != nil {
+	// 	return err
+	// }
 
 	//Setup Services
 	userService := &models.UserService{
