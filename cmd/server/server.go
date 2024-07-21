@@ -115,8 +115,8 @@ func run(cfg config) error {
 	r.Use(csrfMw)
 	r.Get("/", controller.StaticHandler(
 		views.Must(views.ParseFS(templates.FS, "home.gohtml", "tailwind.gohtml"))))
-	r.Get("/contact", controller.StaticHandler(
-		views.Must(views.ParseFS(templates.FS, "contact.gohtml", "tailwind.gohtml"))))
+	r.Get("/blogs", controller.StaticHandler(
+		views.Must(views.ParseFS(templates.FS, "blog_list.gohtml", "tailwind.gohtml"))))
 	r.Get("/citytemp", usersC.CityTemp)
 	r.Post("/citytemp", usersC.ProcessCityTemp)
 	// r.Route("/users/me", func(r chi.Router) {
