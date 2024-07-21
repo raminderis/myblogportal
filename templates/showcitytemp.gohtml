@@ -1,0 +1,19 @@
+{{template "header" .}}
+<div class="py-12 flex justify-center ">
+    <div class="px-8 py-8 bg-white bg-red-50 rounded shadow">
+        <h1 class="pt-4 pb-8 text-center text-1xl font-bold text-gray-900"> 
+            City Weather Response!
+        </h1>
+        <p class ="text-l text-gray-600 pb-4">
+            City: {{.City}}<br>
+            City Temp: {{.CityTemp}} <br>
+            City Humidity: {{.CityHumidity}} <br>
+            Time Temp Was Recorded: {{.Time}} <br>
+        </p>
+        <div class="py-4 flex justify-center">
+            <button type="submit" class="px-2 py-1 bg-indigo-600 
+            hover:bg-indigo-700 text-white rounded font-bold text-lg"><a href="/citytemp" class="underline">Go Back</button>
+        </div>
+    </div>
+</div>
+{{template "footer" .}}
