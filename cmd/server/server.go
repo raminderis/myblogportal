@@ -66,6 +66,7 @@ func loadEnvConfig() (config, error) {
 }
 
 func main() {
+	fmt.Println("RAMINDER SINGH XXXXXXXX")
 	cfg, err := loadEnvConfig()
 	fmt.Println("XXXXXXXXXXXXXXXXXX PSQL DB CONFIG2 XXXXXXXXXXXXXX", cfg.PSQL.String())
 	if err != nil {
