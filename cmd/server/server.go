@@ -71,6 +71,7 @@ func main() {
 	}
 	err = run(cfg)
 	if err != nil {
+		fmt.Println(cfg)
 		panic(err)
 	}
 }
