@@ -67,9 +67,11 @@ func loadEnvConfig() (config, error) {
 
 func main() {
 	cfg, err := loadEnvConfig()
+	fmt.Println("XXXXXXXXXXXXXXXXXX PSQL DB CONFIG2 XXXXXXXXXXXXXX", cfg.PSQL.String())
 	if err != nil {
 		panic(err)
 	}
+	fmt.Println("XXXXXXXXXXXXXXXXXX PSQL DB CONFIG3 XXXXXXXXXXXXXX", cfg.PSQL.String())
 	err = run(cfg)
 	if err != nil {
 		panic(err)
