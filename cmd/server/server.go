@@ -86,7 +86,7 @@ func run(cfg config) error {
 		return err
 	}
 	defer db.Close()
-	fmt.Println(cfg.PSQL.String())
+	fmt.Println("XXXXXXXXXXXXXXXXXX PSQL DB CONFIG XXXXXXXXXXXXXX", cfg.PSQL.String())
 	err = models.MigrateFS(db, migrations.FS, "")
 	if err != nil {
 		return err
