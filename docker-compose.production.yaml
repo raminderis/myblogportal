@@ -24,7 +24,7 @@ services:
       - 443:443
     volumes:
       - ./Caddyfile:/etc/caddy/Caddyfile
-      - ~/data/eazyweather.com/caddy:/data/caddy
+      - ~/data/myblogportal/caddy:/data/caddy
     logging: *highlight-logging
 
   db:
@@ -34,5 +34,5 @@ services:
       POSTGRES_PASSWORD: ${PSQL_PASSWORD} 
       POSTGRES_DB: ${PSQL_DATABASE} 
     volumes:
-      - ~/data/eazyweather.com/psql:/var/lib/postgresql/data/pgdata
+      - ~/data/myblogportal/psql:/var/lib/postgresql/data/pgdata
     logging: *highlight-logging
