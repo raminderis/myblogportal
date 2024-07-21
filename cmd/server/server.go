@@ -79,6 +79,7 @@ func main() {
 func run(cfg config) error {
 	//Setup the DB
 	//fmt.Println(cfg.PSQL)
+	fmt.Println("XXXXXXXXXXXXXXXXXX PSQL DB CONFIG1 XXXXXXXXXXXXXX", cfg.PSQL.String())
 	db, err := models.Open(cfg.PSQL)
 	// cfg := models.DefaultCloudSqlConfig()
 	// db, err := models.ConnectWithConnector(cfg)
