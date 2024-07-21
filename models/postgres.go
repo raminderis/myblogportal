@@ -44,11 +44,11 @@ func (cfg PostgresConfig) String() string {
 func Migrate(db *sql.DB, dir string) error {
 	err := goose.SetDialect("postgres")
 	if err != nil {
-		return fmt.Errorf("migrate: %w", err)
+		return fmt.Errorf("migrate1: %w", err)
 	}
 	err = goose.Up(db, dir)
 	if err != nil {
-		return fmt.Errorf("migrate: %w", err)
+		return fmt.Errorf("migrate2: %w", err)
 	}
 	return nil
 }
