@@ -11,8 +11,6 @@ import (
 	"net/http"
 
 	"github.com/gorilla/csrf"
-	"github.com/raminderis/lenslocked/context"
-	"github.com/raminderis/lenslocked/models"
 )
 
 type public interface {
@@ -35,9 +33,6 @@ func (t Template) Execute(w http.ResponseWriter, r *http.Request, data interface
 		template.FuncMap{
 			"csrfField": func() template.HTML {
 				return csrf.TemplateField(r)
-			},
-			"currentUser": func() *models.User {
-				return context.User(r.Context())
 			},
 			"errors": func() []string {
 				return errMsg

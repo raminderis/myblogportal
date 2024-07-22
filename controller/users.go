@@ -15,9 +15,12 @@ type Users struct {
 		New          Template
 		CityTemp     Template
 		ShowCityTemp Template
+		ContactUs    Template
+		ThanksPage   Template
 	}
-	UserService *models.UserService
-	CityTempS   *models.CityTempS
+	CityTempS      *models.CityTempS
+	EmailService   *models.EmailService
+	MessageService *models.MessageService
 }
 
 func (u Users) CityTemp(w http.ResponseWriter, r *http.Request) {
@@ -53,4 +56,26 @@ func (u Users) ProcessCityTemp(w http.ResponseWriter, r *http.Request) {
 	data.CityTemp = cityTemp.Temp
 	data.Time = cityTemp.Time
 	u.Templates.ShowCityTemp.Execute(w, r, data)
+}
+
+func (u Users) ProcessContactUs(w http.ResponseWriter, r *http.Request) {
+	//receive message
+	var data struct {
+		Name    string
+		Email   string
+		Message string
+	}
+	data.Name = r.FormValue("name")
+	data.Email = r.FormValue("email")
+	data.Message = r.FormValue("message")
+	message, err := u.MessageService.SaveMessage(data.Name, data.Email, data.Message)
+	if err != nil {
+		http.Error(w, "we were unable to receive message, try again later.", http.StatusInternalServerError)
+	}
+	//send a thank you message back
+	err = u.EmailService.ThanksMessage(message.Email, message.Message)
+	if err != nil {
+		http.Error(w, "we were unable to send you a thank you message.", http.StatusInternalServerError)
+	}
+	u.Templates.ThanksPage.Execute(w, r, data)
 }

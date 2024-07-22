@@ -2,12 +2,13 @@ package models
 
 import (
 	"fmt"
+	"os"
 
 	"github.com/go-mail/mail/v2"
 )
 
 const (
-	DefaultSender = "support@lenslocked.com"
+	DefaultSender = "support@eazyweather.com"
 )
 
 type Email struct {
@@ -52,10 +53,11 @@ func (es *EmailService) Send(email Email) error {
 		msg.SetBody("text/html", email.HTMLtext)
 	}
 	fmt.Println(msg)
-	err := es.dialer.DialAndSend(msg)
-	if err != nil {
-		return fmt.Errorf("send: %w", err)
-	}
+	msg.WriteTo(os.Stdout)
+	// err := es.dialer.DialAndSend(msg)
+	// if err != nil {
+	// 	return fmt.Errorf("send: %w", err)
+	// }
 	return nil
 }
 
@@ -73,42 +75,21 @@ func (es *EmailService) ForgotPassword(to, resetURL string) error {
 	return nil
 }
 
-// func (es *EmailService) Send(email Email) error {
-// 	msg := mail.NewMessage()
-// 	msg.SetHeader("To", email.To)
-// 	//msg.SetHeader("From", email.From)
-// 	es.setFrom(msg, email)
-// 	msg.SetHeader("Subject", email.Subject)
-// 	switch {
-// 	case email.Plaintext != "" && email.HTMLtext != "":
-// 		msg.SetBody("text/plain", email.Plaintext)
-// 		msg.AddAlternative("text/html", email.HTMLtext)
-// 	case email.HTMLtext != "":
-// 		msg.SetBody("text/html", email.HTMLtext)
-// 	case email.Plaintext != "":
-// 		msg.SetBody("text/plain", email.Plaintext)
-// 	}
-// 	fmt.Println(msg)
-// 	err := es.dialer.DialAndSend(msg)
-// 	if err != nil {
-// 		return fmt.Errorf("send: %w", err)
-// 	}
-// 	return nil
-// }
-
-// func (es *EmailService) ForgotPassword(to, resetUrl string) error {
-// 	email := Email{
-// 		Subject:   "Reset your password",
-// 		To:        to,
-// 		Plaintext: "To reset your password, please visit the following link: " + resetUrl,
-// 		HTMLtext:  `<p>To reset your password, please visit the following link <a href="` + resetUrl + `">` + resetUrl + `</a></p>`,
-// 	}
-// 	err := es.Send(email)
-// 	if err != nil {
-// 		return fmt.Errorf("forgot password: %w", err)
-// 	}
-// 	return nil
-// }
+func (es *EmailService) ThanksMessage(to, message string) error {
+	fmt.Println("from email service xxxxxx")
+	email := Email{
+		Subject:   "Thank you",
+		To:        to,
+		Plaintext: "You sent us the following message. Thanks and have a nice day \n" + message,
+		HTMLtext:  `<p>You sent us the following message. Thanks and have a nice day <br>` + message + `</p>`,
+	}
+	fmt.Println("from email service xxxxxx")
+	err := es.Send(email)
+	if err != nil {
+		return fmt.Errorf("thanks message email: %w", err)
+	}
+	return nil
+}
 
 func (es EmailService) setFrom(msg *mail.Message, email Email) {
 	var from string

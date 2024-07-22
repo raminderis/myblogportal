@@ -14,16 +14,6 @@ var (
 	ErrEmailTaken = errors.New("models: email address is already in use")
 )
 
-type User struct {
-	ID           uint
-	Email        string
-	PasswordHash string
-}
-
-type UserService struct {
-	DB *sql.DB
-}
-
 type OpenWeatherConfig struct {
 	Domain     string
 	Path       string
@@ -118,4 +108,34 @@ func (us *CityTempS) Communicate(city, apiToken string) (*CityTempS, error) {
 	}
 	// fmt.Println(cityTemp.Temp)
 	return &cityTemp, nil
+}
+
+type Message struct {
+	ID      int
+	Name    string
+	Email   string
+	Message string
+}
+
+type MessageService struct {
+	DB *sql.DB
+}
+
+func (ms *MessageService) SaveMessage(name, email, messagebody string) (*Message, error) {
+	message := Message{
+		Name:    name,
+		Email:   email,
+		Message: messagebody,
+	}
+	row := ms.DB.QueryRow(`
+		INSERT INTO messages (sender, email, sender_message)
+		VALUES ($1,$2,$3) ON CONFLICT (sender) DO
+		UPDATE
+		SET email = $2, sender_message = $3 
+		RETURNING id`, name, email, messagebody)
+	err := row.Scan(&message.ID)
+	if err != nil {
+		return nil, fmt.Errorf("save message contact service: %w", err)
+	}
+	return &message, nil
 }

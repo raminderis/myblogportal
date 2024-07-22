@@ -78,29 +78,24 @@ func main() {
 
 func run(cfg config) error {
 	//Setup the DB
-	//fmt.Println(cfg.PSQL)
 	db, err := models.Open(cfg.PSQL)
-	// cfg := models.DefaultCloudSqlConfig()
-	// db, err := models.ConnectWithConnector(cfg)
 	if err != nil {
 		return err
 	}
 	defer db.Close()
-	// err = models.MigrateFS(db, migrations.FS, "")
-	// if err != nil {
-	// 	return err
-	// }
 
 	//Setup Services
-	userService := &models.UserService{
+	msgService := &models.MessageService{
 		DB: db,
 	}
+	emailService := models.NewEmailService(cfg.SMTP)
 	//Setup Middleware
 	csrfMw := csrf.Protect([]byte(cfg.CSRF.Key), csrf.Secure(cfg.CSRF.Secure))
 
 	//Setup controllers
 	usersC := controller.Users{
-		UserService: userService,
+		MessageService: msgService,
+		EmailService:   emailService,
 	}
 	usersC.Templates.CityTemp = views.Must(views.ParseFS(
 		templates.FS,
@@ -109,6 +104,10 @@ func run(cfg config) error {
 	usersC.Templates.ShowCityTemp = views.Must(views.ParseFS(
 		templates.FS,
 		"showcitytemp.gohtml", "tailwind.gohtml",
+	))
+	usersC.Templates.ThanksPage = views.Must(views.ParseFS(
+		templates.FS,
+		"thankspage.gohtml", "tailwind.gohtml",
 	))
 	//Setup Router and Routes
 	r := chi.NewRouter()
@@ -119,10 +118,16 @@ func run(cfg config) error {
 		views.Must(views.ParseFS(templates.FS, "blog_list.gohtml", "tailwind.gohtml"))))
 	r.Get("/citytemp", usersC.CityTemp)
 	r.Post("/citytemp", usersC.ProcessCityTemp)
-	// r.Route("/users/me", func(r chi.Router) {
-	// 	r.Use(umw.RequireUser)
-	// 	r.Get("/", usersC.CurrentUser)
-	// })
+	r.Get("/contactus", controller.StaticHandler(
+		views.Must(views.ParseFS(templates.FS, "contactus.gohtml", "tailwind.gohtml"))))
+	r.Post("/contactus", usersC.ProcessContactUs)
+
+	//within routes my blogs
+	r.Get("/one_step_at_a_time", controller.StaticHandler(
+		views.Must(views.ParseFS(templates.FS, "one_step_at_a_time.gohtml", "tailwind.gohtml"))))
+	r.Get("/the_sun_rose_that_day", controller.StaticHandler(
+		views.Must(views.ParseFS(templates.FS, "the_sun_rose_that_day.gohtml", "tailwind.gohtml"))))
+
 	assetsHandler := http.FileServer(http.Dir("assets"))
 	r.Get("/assets/*", http.StripPrefix("/assets", assetsHandler).ServeHTTP)
 
