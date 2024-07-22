@@ -10,6 +10,7 @@ import (
 	"github.com/gorilla/csrf"
 	"github.com/joho/godotenv"
 	"github.com/raminderis/lenslocked/controller"
+	"github.com/raminderis/lenslocked/migrations"
 	"github.com/raminderis/lenslocked/models"
 	"github.com/raminderis/lenslocked/templates"
 	"github.com/raminderis/lenslocked/views"
@@ -83,7 +84,14 @@ func run(cfg config) error {
 		return err
 	}
 	defer db.Close()
-
+	err = db.Ping()
+	if err != nil {
+		panic(err)
+	}
+	err = models.MigrateFS(db, migrations.FS, ".")
+	if err != nil {
+		panic(err)
+	}
 	//Setup Services
 	msgService := &models.MessageService{
 		DB: db,

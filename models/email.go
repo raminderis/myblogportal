@@ -2,7 +2,6 @@ package models
 
 import (
 	"fmt"
-	"os"
 
 	"github.com/go-mail/mail/v2"
 )
@@ -52,12 +51,10 @@ func (es *EmailService) Send(email Email) error {
 	case email.HTMLtext != "":
 		msg.SetBody("text/html", email.HTMLtext)
 	}
-	fmt.Println(msg)
-	msg.WriteTo(os.Stdout)
-	// err := es.dialer.DialAndSend(msg)
-	// if err != nil {
-	// 	return fmt.Errorf("send: %w", err)
-	// }
+	err := es.dialer.DialAndSend(msg)
+	if err != nil {
+		return fmt.Errorf("send: %w", err)
+	}
 	return nil
 }
 
